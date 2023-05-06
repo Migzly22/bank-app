@@ -70,8 +70,8 @@ function LoginPage ({ HandleUserToken, Registring })  {
     };
 
 
-    //Verify if the data inputs are match with the default user data
-    const verifyuser= async()=>{
+   //Verify if the data inputs are match with the default user data
+   const verifyuser= async()=>{
 
 
       if (localStorage.getItem('Users')){
@@ -118,7 +118,7 @@ function LoginPage ({ HandleUserToken, Registring })  {
         })
       }
       
-    }
+   }
 
     //Verify if the data inputs are match with the default user data
    const REGISTRATION= ()=>{

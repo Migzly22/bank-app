@@ -192,6 +192,107 @@ function App() {
   }
 
 
+  // updating the name of the user
+  const SavenewName =(newname)=>{
+        const User1  = new User(authUser.uEmail, authUser.password, newname, authUser.balance, authUser.expenseItems)
+        // Change the authUser value
+        setUser(User1)
+
+        // return new list of data of the Users
+        let storedData2 = JSON.parse(localStorage.getItem('Users')) || [];
+        let newlist1 = storedData2.map(data => {
+          if (data.email === authUser.uEmail) {
+            return {
+              email: authUser.uEmail,
+              balance: authUser.balance,
+              name: newname,
+              password: authUser.password
+            }
+          }
+          return data;
+        });
+
+        localStorage.setItem('Users', JSON.stringify(newlist1));
+
+        Swal.fire({
+          icon: 'success',
+          text: `Updated Successfully`,
+          showConfirmButton: false,
+        })
+  }
+    // updating the password of the user
+  const SavenewPassword =(newpass)=>{
+      const User1  = new User(authUser.uEmail, newpass, authUser.name, authUser.balance, authUser.expenseItems)
+      // Change the authUser value
+      setUser(User1)
+
+      // return new list of data of the Users
+      let storedData2 = JSON.parse(localStorage.getItem('Users')) || [];
+      let newlist1 = storedData2.map(data => {
+        if (data.email === authUser.uEmail) {
+          return {
+            email: authUser.uEmail,
+            balance: authUser.balance,
+            name: authUser.name,
+            password: newpass
+          }
+        }
+        return data;
+      });
+
+      localStorage.setItem('Users', JSON.stringify(newlist1));
+  }
+
+  const SendingMoney = (sentto, sentcost) =>{
+    //console.log(sentto,sentcost)
+
+    // new user balance
+    let newbalance = authUser.balance - sentcost
+
+    const useradd = new User(authUser.uEmail,authUser.password,authUser.name,newbalance,authUser.expenseItems)
+    //automatically updates the users value in the local storage using useeffect
+    setUser(useradd)
+
+
+    let storedData = JSON.parse(localStorage.getItem('Users'))
+    let storedData1 = JSON.parse(localStorage.getItem('UserDataList'))
+
+
+    // change the receivers balance in the localstorage Users
+    let newlist = storedData.map(data => {
+      if (data.email === sentto) {
+        let receiverbalance = parseFloat(data.balance) + parseFloat(sentcost)
+
+        return {
+          email: data.email,
+          balance: receiverbalance,
+          name: data.name,
+          password : data.password
+        }
+      }
+      return data;
+    });
+
+    // change the receivers balance in the localstorage UserDataList
+    let newlist2 = storedData1.map(data => {
+      if (data.email === sentto) {
+        let receiverbalance = parseFloat(data.balance) + parseFloat(sentcost)
+
+        return {
+          email: data.email,
+          balance: receiverbalance,
+          expenses : data.expenses
+        }
+      }
+      return data;
+    });
+
+
+    localStorage.setItem('Users', JSON.stringify(newlist));
+    localStorage.setItem('UserDataList', JSON.stringify(newlist2));
+
+  }
+
       //fires every render
     useEffect(() => {
 
@@ -278,8 +379,11 @@ function App() {
             HandleWithdraw = {HandleWithdraw}
             HandleDelete = {HandleDelete}
             HandleUpdateList = {HandleUpdateList}
-
-
+            Username = {authUser.name}
+            Uemail = {authUser.uEmail}
+            SavenewName = {SavenewName}
+            SavenewPassword= {SavenewPassword}
+            SendingMoney= {SendingMoney}
             Expenditures = {expenses}
             Balance={authUser.balance}
 

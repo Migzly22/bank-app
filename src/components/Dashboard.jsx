@@ -1,7 +1,76 @@
 import '../css/dashboard.css'
+import image1 from'../assets/img1.png';
+import image2 from'../assets/img2.jpg';
+import { useState, useEffect } from 'react';
 
 
-function Dashboard({HandleLogOut,HandleAddItem,HandleDeposit,HandleWithdraw,HandleDelete,HandleUpdateList,Expenditures,Balance}){
+
+
+
+function Dashboard({HandleLogOut,HandleAddItem,HandleDeposit,HandleWithdraw,HandleDelete,HandleUpdateList,Expenditures,Balance, Username, Uemail,SavenewName,SavenewPassword,SendingMoney}){
+    const [inputPassword1, setPass1] = useState('')
+    const [inputName, setName] = useState(Username)
+    const [inputCpass, setCpass] = useState('')
+
+
+    
+    // use to get the value in Password
+    const passChange2 = event => {
+        setPass1(event.target.value);
+      };
+    // use to get the value in Email
+    const nameChange = event => {
+        setName(event.target.value);
+    };
+    // use to get the value in Password
+    const cpassChange = event => {
+        setCpass(event.target.value);
+    };
+
+    // to ensure that the settings element is available in the DOM 
+    useEffect(() => {
+        const accountshow = document.getElementById('accountshow')
+        const setting1 = document.getElementById('setting1');
+        const setting2 = document.getElementById('setting2');
+        const set1info = document.getElementsByClassName('set1info')[0]
+        const set2info = document.getElementsByClassName('set2info')[0]
+        const closeinfo = document.getElementById('closeinfo')
+        const accountsection = document.getElementsByClassName('accountsection')[0]
+    
+        //show the accountmodal
+        accountshow.addEventListener('click',()=>{
+            accountsection.style.display="block"
+        })
+        //change the active css whenever the setting1 or setting2 div is clicked
+        setting1.addEventListener('click', () => {
+          setting2.classList.remove('activediv');
+          setting1.classList.add('activediv');
+          set1info.style.display = "block"
+          set2info.style.display = "none"
+        });
+        setting2.addEventListener('click', () => {
+          setting2.classList.add('activediv');
+          setting1.classList.remove('activediv');
+          set1info.style.display = "none"
+          set2info.style.display = "block"
+        });
+        closeinfo.addEventListener('click',()=>{
+            accountsection.style.display = "none"
+        })
+
+        // cleanup function to remove event listeners
+        return () => {
+          setting1.removeEventListener('click', () => {
+            setting2.classList.remove('activediv');
+            setting1.classList.add('activediv');
+          });
+          setting2.removeEventListener('click', () => {
+            setting2.classList.add('activediv');
+            setting1.classList.remove('activediv');
+          });
+        };
+    }, []);
+
 
     //modal for deposite amount using sweetalert
     const Deposit= async()=>{
@@ -193,6 +262,90 @@ function Dashboard({HandleLogOut,HandleAddItem,HandleDeposit,HandleWithdraw,Hand
 
 
     }
+    // validating the passwords
+    const SavingTest =()=>{
+        if (inputPassword1.length > 0 && inputPassword1 === inputCpass){
+            SavenewPassword(inputPassword1)
+            Swal.fire({
+                icon: 'success',
+                text: `Updated Successfully`,
+                showConfirmButton: false,
+            })
+            setPass1('')
+            setCpass('')
+        }else{
+            Swal.fire({
+                icon: 'info',
+                text: `Wrong Inputs. Please Try Again.`,
+                showConfirmButton: false,
+            })
+        }
+    }
+
+
+    const SendMoney = async()=>{
+        const { value: formValues } = await Swal.fire({
+            title: 'Send Money',
+            html:
+              `<input id="swal-input1" class="swal2-input" placeholder="Receiver's Email">` +
+              `<input id="swal-input2" type="number" class="swal2-input" placeholder="Amount">`,
+            focusConfirm: false,
+            confirmButtonText:"Send Money",
+            preConfirm: () => {
+              return [
+                document.getElementById('swal-input1').value,
+                document.getElementById('swal-input2').value,
+              ]
+            }
+        })
+
+ 
+        if (formValues){
+            let valuecontainer = formValues
+            let storedData = JSON.parse(localStorage.getItem('UserDataList')) || [];
+            let selectedemail = storedData.filter((emails)=> emails.email === valuecontainer[0] )
+
+            if(selectedemail.length == 0){
+                await Swal.fire({
+                    icon: 'error',
+                    text: `Email Doesnt Exist`,
+                    showConfirmButton: false,
+                })
+                return
+            }
+            if(valuecontainer[1].length == 0){
+                await Swal.fire({
+                    icon: 'error',
+                    text: `Please Enter a Value`,
+                    showConfirmButton: false,
+                })
+                return
+            }
+            if(parseFloat(valuecontainer[1]) > Balance){
+                await Swal.fire({
+                    icon: 'error',
+                    text: `You dont have enough Balance`,
+                    showConfirmButton: false,
+                })
+                return
+            }
+
+            SendingMoney(valuecontainer[0],valuecontainer[1])
+
+
+            await Swal.fire({
+                icon: 'success',
+                text: `Sent Successfully`,
+                showConfirmButton: false,
+            })
+            return
+
+
+        }
+
+
+
+    }
 
     return ( 
         <>
@@ -201,7 +354,7 @@ function Dashboard({HandleLogOut,HandleAddItem,HandleDeposit,HandleWithdraw,Hand
                 <div className="dropdown">
                     <div className="dropbtn"><i className="fa-solid fa-circle-user"></i></div>
                     <div className="dropdown-content">
-                        <a href="#">Account</a>
+                        <a href="#" id="accountshow" >Account</a>
                         <a href="#" onClick={HandleLogOut}>Logout</a>
                     </div>
                 </div>
@@ -211,22 +364,28 @@ function Dashboard({HandleLogOut,HandleAddItem,HandleDeposit,HandleWithdraw,Hand
                 <div className="card">
                     <div className="cardinfo">
                         <div className="balancecontainer">
+                            <div>Welcome {Username}</div>
                             <h1>₱ {Balance}</h1>
                         </div>
-                        <div className="cardinformation">
-                            <div className="leftside">
-                                <div className='banknum'>
-                                    6353 7863 5247 9781
+                        <div className="showcardinfo">
+                            <div className="cardinformation">
+                                <img src={image1} alt="" className='imgvisacard' />
+                                <div className="leftside">
+                                    <img src={image2} alt="" />
+                                    <div className='banknum'>
+                                        6353 7863 5247 9781
+                                    </div>
+                                    <div className="expiredate">
+                                        01/26
+                                    </div>
                                 </div>
-                                <div className="expiredate">
-                                    01/26
-                                </div>
-                            </div>
-                            <div className="rightside">
-                                VISA
                             </div>
                         </div>
+             
                     </div>
+
+
+
                     <div className="cardbtn">
                         <div onClick={Deposit}>
   
@@ -237,7 +396,7 @@ function Dashboard({HandleLogOut,HandleAddItem,HandleDeposit,HandleWithdraw,Hand
                                 <i className="fa-solid fa-hand-holding-dollar"></i>
                                 Withdraw
                         </div>
-                        <div>
+                        <div onClick={SendMoney}>
                                 <i className="fa-solid fa-paper-plane"></i>
                                 Send Money
             
@@ -295,7 +454,49 @@ function Dashboard({HandleLogOut,HandleAddItem,HandleDeposit,HandleWithdraw,Hand
 
             </section>
 
-
+            <section className="accountsection">
+                <div className="settingcon">
+                    <div className="settingnav">
+                        <div className="activediv" id='setting1'>Information</div>
+                        <div className="" id='setting2'>Change Password</div>
+                        <div className="" id='closeinfo'>Close</div>
+                    </div>
+                    <div className="settingscreeb">
+                        <div className="set1info">
+                            <form action="">
+                                <div className='forminputsset'>
+                                    <label htmlFor="">Unique Email</label>
+                                    <input type="text" value={Uemail} readOnly className='readonly' />
+                                </div>
+                                <div className='forminputsset'>
+                                    <label htmlFor="">Name</label>
+                                    <input type="text" value={inputName}  onChange={nameChange}/>  
+                                </div>
+                                <div className="formbtns">
+                                    <input type="button" value="Save" onClick={()=>{
+                                        SavenewName(inputName)
+                                    }} />
+                                </div>
+                            </form>
+                        </div>
+                        <div className="set2info">
+                            <form action="">
+                                <div className='forminputsset'>
+                                    <label htmlFor="">New Password</label>
+                                    <input type="password" value={inputPassword1} onChange={passChange2} />
+                                </div>
+                                <div className='forminputsset'>
+                                    <label htmlFor="">Confirm Password</label>
+                                    <input type="password" value={inputCpass}  onChange={cpassChange}/>  
+                                </div>
+                                <div className="formbtns">
+                                    <input type="button" value="Save" onClick={SavingTest}/>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </section>
 
 
 

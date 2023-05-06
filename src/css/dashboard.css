@@ -82,20 +82,16 @@ nav{
     display: flex;
     column-gap: 1em;
 }
+
 .cardinfo{
     overflow-x: hidden;
     width: 50%;
-    height: 100%;
+    height: 200px;
     border-radius: 1em;
 
-    padding: 1em;
+
 
     border: 1px solid var(--color1);
-
-
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
 
     background: linear-gradient( 90deg, rgba(208, 187, 148, 0.741) 60%, rgba(74, 44, 42, 0.763) 100% );
 
@@ -103,17 +99,50 @@ nav{
 }
 
 .balancecontainer{
+    display: block;
     padding: .5em 0.5em;
+    position: relative;
+    top: 50%;
+    left: 0%;
+    translate: 5% -50%;
+
 }
 .balancecontainer h1{
     font-size: 3em;
 }
+
+.showcardinfo{
+    display: none;
+    width: 100%;
+    height: 100%;
+
+
+}
 .cardinformation{
-    padding: 1em 0.5em;
+    position: relative;
+
+    width: 100%;
+    height: 100%;
+
+    padding: 1em 2em;
     display: flex;
-    justify-content: space-between;
+    justify-content:space-between;
     flex-wrap: wrap;
-    align-items: center;
+    align-items:end;
+}
+
+.cardinformation .imgvisacard{
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    left: 0;
+    top: 0;
+}
+
+
+.leftside{
+    z-index: 1;
+    color: white;
 }
 .banknum{
     font-weight: bold;
@@ -121,11 +150,13 @@ nav{
 .expiredate{
     font-style: italic;
 }
-.rightside{
-    font-weight: bold;
-    margin-top: 1em;
-}
 
+.cardinfo:hover > .showcardinfo{
+    display: block;
+}
+.cardinfo:hover > .balancecontainer{
+    display: none;
+}
 
 .cardbtn{
 
@@ -275,4 +306,113 @@ td,th{
 .fa-pen-to-square:hover{
     background: blue;
     color: #fff;
+}
+
+
+/*account section*/
+.accountsection{
+    display: none;
+    position: fixed;
+    background: #00000078;
+    width: 100%;
+    height: 100%;
+
+    top: 0;
+}
+.settingcon{
+    background: #fff;
+    width: 50vw;
+    height: 400px;
+
+    border-radius: 2em;
+
+    overflow: hidden;
+    display: flex;
+
+
+
+
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    translate: -50% -50%;
+}
+
+.settingnav{
+    width: 30%;
+    height: 100%;
+    border-right: 3px solid rgb(74, 44, 42,0.763);
+}
+.settingnav > div{
+    padding: 1em;
+    border: 0;
+    border-bottom: 2px solid var(--color3);
+}
+.settingnav > div:hover{
+    background: var(--color3);
+}
+.settingnav > div:last-child{
+    position: absolute;
+    width: 30%;
+    bottom: 0%;
+    border: 0;
+    border-top:3px solid var(--color3);
+}
+.settingnav > .activediv{
+    background: linear-gradient( 90deg, rgba(208, 187, 148, 0.741) 80%, rgba(74, 44, 42, 0.763) 100% );
+}
+.settingnav > .activediv:hover{
+    background: linear-gradient( 90deg, rgba(208, 187, 148, 0.741) 80%, rgba(74, 44, 42, 0.763) 100% );
+}
+
+.settingscreeb{
+    width: 70%;
+    height: 100%;
+}
+.forminputsset{
+    margin-top: 1em;
+    padding: 0em 2em;
+    display: flex;
+    column-gap: 1em;
+    align-items: center;
+
+    width: 100%;
+    margin-bottom: 1em;
+}
+.forminputsset > label{
+    width: 40%;
+    font-size: 1em;
+}
+
+.forminputsset > input{
+    padding: 1em .5em;
+    width: 60%;
+
+    border: 1px solid var(--color3);
+}
+.forminputsset >.readonly{
+    border: 0;
+}
+
+
+.formbtns{
+    position: absolute;
+    bottom: 5%;
+    right: 5%;
+}
+.formbtns > input{
+
+    border-radius: 1em;
+
+    padding: 1em;
+    border: 1px solid var(--color3);
+    background: transparent;
+}
+.formbtns > input:hover{
+    background: linear-gradient( 180deg, rgba(208, 187, 148, 0.741) 80%, rgba(74, 44, 42, 0.763) 100% );
+
+}
+
+.set2info{
+    display: none;
 }
