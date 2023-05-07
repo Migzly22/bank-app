@@ -129,9 +129,16 @@ function LoginPage ({ HandleUserToken, Registring })  {
          balance : 0
       };
 
+      let frienddata = {
+         email : inputEmail1,
+         requests : [],
+         accepted : []
+      }
+
       if (localStorage.getItem('Users')){
 
-         let storedData = JSON.parse(localStorage.getItem('Users'));
+         let storedData = JSON.parse(localStorage.getItem('Users'))||[];
+         let storeFData =  JSON.parse(localStorage.getItem('FriendList'))||[];
 
          //check if the email already exist 
          let emailfilter = storedData.filter((data)=>
@@ -155,6 +162,12 @@ function LoginPage ({ HandleUserToken, Registring })  {
             if (inputPassword1 == inputCpass){
                storedData.push(data1)
                localStorage.setItem('Users', JSON.stringify(storedData));
+
+               
+               storeFData.push(frienddata)
+               localStorage.setItem('FriendList', JSON.stringify(storeFData));
+
+
                Swal.fire({
                   icon: 'success',
                   text: `Registered Successfully`,
@@ -185,6 +198,15 @@ function LoginPage ({ HandleUserToken, Registring })  {
        }else{
          // if the key Users doesnt exist in the localstorage
          localStorage.setItem('Users', JSON.stringify([data1]));
+
+         
+         if (localStorage.getItem('FriendList')) {
+            let storeFData = JSON.parse(localStorage.getItem('FriendList'));
+            storeFData.push(frienddata);
+            localStorage.setItem('FriendList', JSON.stringify(storeFData));
+          } else {
+            localStorage.setItem('FriendList', JSON.stringify([frienddata]));
+          }
 
          Swal.fire({
             icon: 'success',

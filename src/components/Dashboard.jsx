@@ -3,7 +3,7 @@ import image1 from'../assets/img1.png';
 import image2 from'../assets/img2.jpg';
 import { useState, useEffect } from 'react';
 
-
+import FriendSection from './FriendSection';
 
 
 
@@ -11,7 +11,14 @@ function Dashboard({HandleLogOut,HandleAddItem,HandleDeposit,HandleWithdraw,Hand
     const [inputPassword1, setPass1] = useState('')
     const [inputName, setName] = useState(Username)
     const [inputCpass, setCpass] = useState('')
+    const [friendSectionDisplay, setFriendSectionDisplay] = useState('none');
 
+    const showFriendSection = () => {
+      setFriendSectionDisplay('block');
+    };
+    const closeFriendSection = () => {
+        setFriendSectionDisplay('none');
+      };
 
     
     // use to get the value in Password
@@ -347,6 +354,10 @@ function Dashboard({HandleLogOut,HandleAddItem,HandleDeposit,HandleWithdraw,Hand
 
     }
 
+    const Friends =()=>{
+        document.getElementsByClassName('FriendSection').style = "block"
+    }
+
     return ( 
         <>
             <nav className='DashboardInit'>
@@ -401,7 +412,7 @@ function Dashboard({HandleLogOut,HandleAddItem,HandleDeposit,HandleWithdraw,Hand
                                 Send Money
             
                         </div>
-                        <div>
+                        <div onClick={showFriendSection}>
                  
                                 <i className="fa-solid fa-user-group"></i>
                                 Friend
@@ -496,6 +507,17 @@ function Dashboard({HandleLogOut,HandleAddItem,HandleDeposit,HandleWithdraw,Hand
                         </div>
                     </div>
                 </div>
+            </section>
+
+
+            <section className="FriendSection" style={{display: friendSectionDisplay}} >
+
+                <FriendSection 
+                    
+                    closeFriendSection={closeFriendSection}
+                    Useremail = {Uemail}
+                    Uname = {Username}
+                />
             </section>
 
 
