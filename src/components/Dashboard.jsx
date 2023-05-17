@@ -7,12 +7,13 @@ import FriendSection from './FriendSection';
 
 
 
-function Dashboard({HandleLogOut,HandleAddItem,HandleDeposit,HandleWithdraw,HandleDelete,HandleUpdateList,Expenditures,Balance, Username, Uemail,SavenewName,SavenewPassword,SendingMoney}){
+function Dashboard({handlelogout,handleadditem,handledeposit,handlewithdraw,handledelete,handleupdatelist,expenditures,balance, username, uemail,savenewname,savenewpassword,sendingmoney}){
     const [inputPassword1, setPass1] = useState('')
-    const [inputName, setName] = useState(Username)
+    const [inputName, setName] = useState(username)
     const [inputCpass, setCpass] = useState('')
     const [friendSectionDisplay, setFriendSectionDisplay] = useState('none');
 
+    //display and hide the FriendSection
     const showFriendSection = () => {
       setFriendSectionDisplay('block');
     };
@@ -98,7 +99,7 @@ function Dashboard({HandleLogOut,HandleAddItem,HandleDeposit,HandleWithdraw,Hand
                 showConfirmButton: false,
             })
 
-            HandleDeposit(money)
+            handledeposit(money)
 
           }else if (inputmoney < 0){
             await Swal.fire({
@@ -113,12 +114,12 @@ function Dashboard({HandleLogOut,HandleAddItem,HandleDeposit,HandleWithdraw,Hand
         let money = 0
         //SweetAlert
         const { value: inputmoney } = await Swal.fire({
-            title: 'Enter the Amount you want to deposit.',
+            title: 'Enter the Amount you want to withdraw.',
             input: 'number',
             inputPlaceholder: '0'
           })
 
-          if (inputmoney > 0 && parseFloat(Balance) >= inputmoney) {
+          if (inputmoney > 0 && parseFloat(balance) >= inputmoney) {
             //transform the value of inputmoney to float with 2 decimal point
             money = (parseFloat(inputmoney)).toFixed(2)
             Swal.fire({
@@ -127,7 +128,7 @@ function Dashboard({HandleLogOut,HandleAddItem,HandleDeposit,HandleWithdraw,Hand
                 showConfirmButton: false,
             })
 
-            HandleWithdraw(money)
+            handlewithdraw(money)
 
 
           }else if(inputmoney < 0){
@@ -136,10 +137,10 @@ function Dashboard({HandleLogOut,HandleAddItem,HandleDeposit,HandleWithdraw,Hand
                 text: "Please Enter Correct Value.",
                 showConfirmButton: false,
             })
-          }else if (parseFloat(Balance) < inputmoney){
+          }else if (parseFloat(balance) < inputmoney){
             await Swal.fire({
                 icon: 'warning',
-                text: "You've exceed the maximum amount of your Balance.",
+                text: "You've exceed the maximum amount of your balance.",
                 showConfirmButton: false,
             })
           }
@@ -168,7 +169,7 @@ function Dashboard({HandleLogOut,HandleAddItem,HandleDeposit,HandleWithdraw,Hand
             let valuecontainer = formValues
 
             //validate if the name of the item exist in the list
-            let bool1 = Expenditures.filter(
+            let bool1 = expenditures.filter(
                 (expenseItem) => expenseItem.uName === valuecontainer[0]
             );
 
@@ -190,7 +191,7 @@ function Dashboard({HandleLogOut,HandleAddItem,HandleDeposit,HandleWithdraw,Hand
                     showConfirmButton: false,
                 })
 
-                HandleAddItem(valuecontainer[0],valuecontainer[1]);
+                handleadditem(valuecontainer[0],valuecontainer[1]);
 
             }else{
                 Swal.fire({
@@ -206,7 +207,7 @@ function Dashboard({HandleLogOut,HandleAddItem,HandleDeposit,HandleWithdraw,Hand
     }
     //delete item in the list
     const DeleteItem =(itemid) =>{
-        HandleDelete(itemid)
+        handledelete(itemid)
     }
     //update item in the list
     const UpdateItem = async(itemname, itemcost)=>{
@@ -231,7 +232,7 @@ function Dashboard({HandleLogOut,HandleAddItem,HandleDeposit,HandleWithdraw,Hand
             let valuecontainer = formValues
 
             //validate if the name of the item exist in the list
-            let bool1 = Expenditures.filter(
+            let bool1 = expenditures.filter(
                 (expenseItem) => oldname !== expenseItem.uName && expenseItem.uName === valuecontainer[0] 
             );
 
@@ -253,7 +254,7 @@ function Dashboard({HandleLogOut,HandleAddItem,HandleDeposit,HandleWithdraw,Hand
                     showConfirmButton: false,
                 })
 
-                HandleUpdateList(formValues[0],formValues[1],itemname)
+                handleupdatelist(formValues[0],formValues[1],itemname)
 
             }else{
                 Swal.fire({
@@ -272,7 +273,7 @@ function Dashboard({HandleLogOut,HandleAddItem,HandleDeposit,HandleWithdraw,Hand
     // validating the passwords
     const SavingTest =()=>{
         if (inputPassword1.length > 0 && inputPassword1 === inputCpass){
-            SavenewPassword(inputPassword1)
+            savenewpassword(inputPassword1)
             Swal.fire({
                 icon: 'success',
                 text: `Updated Successfully`,
@@ -328,16 +329,16 @@ function Dashboard({HandleLogOut,HandleAddItem,HandleDeposit,HandleWithdraw,Hand
                 })
                 return
             }
-            if(parseFloat(valuecontainer[1]) > Balance){
+            if(parseFloat(valuecontainer[1]) > balance){
                 await Swal.fire({
                     icon: 'error',
-                    text: `You dont have enough Balance`,
+                    text: `You dont have enough balance`,
                     showConfirmButton: false,
                 })
                 return
             }
 
-            SendingMoney(valuecontainer[0],valuecontainer[1])
+            sendingmoney(valuecontainer[0],valuecontainer[1])
 
 
             await Swal.fire({
@@ -354,9 +355,6 @@ function Dashboard({HandleLogOut,HandleAddItem,HandleDeposit,HandleWithdraw,Hand
 
     }
 
-    const Friends =()=>{
-        document.getElementsByClassName('FriendSection').style = "block"
-    }
 
     return ( 
         <>
@@ -366,7 +364,7 @@ function Dashboard({HandleLogOut,HandleAddItem,HandleDeposit,HandleWithdraw,Hand
                     <div className="dropbtn"><i className="fa-solid fa-circle-user"></i></div>
                     <div className="dropdown-content">
                         <a href="#" id="accountshow" >Account</a>
-                        <a href="#" onClick={HandleLogOut}>Logout</a>
+                        <a href="#" onClick={handlelogout}>Logout</a>
                     </div>
                 </div>
             </nav>
@@ -375,8 +373,8 @@ function Dashboard({HandleLogOut,HandleAddItem,HandleDeposit,HandleWithdraw,Hand
                 <div className="card">
                     <div className="cardinfo">
                         <div className="balancecontainer">
-                            <div>Welcome {Username}</div>
-                            <h1>₱ {Balance}</h1>
+                            <div>Welcome {username}</div>
+                            <h1>₱ {balance}</h1>
                         </div>
                         <div className="showcardinfo">
                             <div className="cardinformation">
@@ -437,12 +435,12 @@ function Dashboard({HandleLogOut,HandleAddItem,HandleDeposit,HandleWithdraw,Hand
                                 </tr>
                             </thead>
                             <tbody>
-                                {Expenditures.length === 0 ? (
+                                {expenditures.length === 0 ? (
                                     <tr>
                                         <td colSpan="3" style={{textAlign: 'center'}}>NONE</td>
                                     </tr>
                                 ) : (
-                                    Expenditures.map((expense) => (
+                                    expenditures.map((expense) => (
                                         <tr>
                                             <td>{expense.uName}</td>
                                             <td>₱ {expense.cost}</td>
@@ -477,7 +475,7 @@ function Dashboard({HandleLogOut,HandleAddItem,HandleDeposit,HandleWithdraw,Hand
                             <form action="">
                                 <div className='forminputsset'>
                                     <label htmlFor="">Unique Email</label>
-                                    <input type="text" value={Uemail} readOnly className='readonly' />
+                                    <input type="text" value={uemail} readOnly className='readonly' />
                                 </div>
                                 <div className='forminputsset'>
                                     <label htmlFor="">Name</label>
@@ -485,7 +483,7 @@ function Dashboard({HandleLogOut,HandleAddItem,HandleDeposit,HandleWithdraw,Hand
                                 </div>
                                 <div className="formbtns">
                                     <input type="button" value="Save" onClick={()=>{
-                                        SavenewName(inputName)
+                                        savenewname(inputName)
                                     }} />
                                 </div>
                             </form>
@@ -515,8 +513,8 @@ function Dashboard({HandleLogOut,HandleAddItem,HandleDeposit,HandleWithdraw,Hand
                 <FriendSection 
                     
                     closeFriendSection={closeFriendSection}
-                    Useremail = {Uemail}
-                    Uname = {Username}
+                    useremail1 = {uemail}
+                    uname = {username}
                 />
             </section>
 

@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import '../css/login.css'
 
 
-//Sliding Event in Login and Registration Form
+//Sliding Event in Login and registration Form
 const loginForm = document.querySelector("form.login");
 function signupclick() {
   loginForm.style.marginLeft = "-50%";
@@ -14,7 +14,7 @@ function loginclick() {
 
 
 //function that holds the default user data and handleusertoken
-function LoginPage ({ HandleUserToken, Registring })  {
+function LoginPage ({ handleusertoken })  {
     const [inputEmail, setEmail] = useState('')
     const [inputPassword, setPass] = useState('')
 
@@ -92,7 +92,7 @@ function LoginPage ({ HandleUserToken, Registring })  {
                   'success'
                 )
                 //if it does match, set the user token and pass the information in the User Class
-                HandleUserToken(emailfilter[0].email,emailfilter[0].password,emailfilter[0].name,emailfilter[0].balance)
+                handleusertoken(emailfilter[0].email,emailfilter[0].password,emailfilter[0].name,emailfilter[0].balance)
               }else{
                 //Sweetalert error message 
                 Swal.fire({
@@ -121,7 +121,7 @@ function LoginPage ({ HandleUserToken, Registring })  {
    }
 
     //Verify if the data inputs are match with the default user data
-   const REGISTRATION= ()=>{
+   const registration= ()=>{
       let data1 = {
          email : inputEmail1,
          password : inputPassword1,
@@ -274,7 +274,7 @@ function LoginPage ({ HandleUserToken, Registring })  {
                   </div>
                   <div class="field btn">
                      <div class="btn-layer"></div>
-                     <input type="button" value="SignUp" name ="submit2" onClick={REGISTRATION}/>
+                     <input type="button" value="SignUp" name ="submit2" onClick={registration}/>
                   </div>
                </form>
               </div>

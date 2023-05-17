@@ -3,7 +3,7 @@ import '../css/friend.css'
 
 
 
-const FriendSection = ({closeFriendSection,Useremail,Uname}) => {
+const FriendSection = ({closeFriendSection,useremail1,uname}) => {
 
     const [Search, setSearch] = useState('')
     const [friends, setFriend] = useState([])
@@ -22,7 +22,7 @@ const FriendSection = ({closeFriendSection,Useremail,Uname}) => {
             //set the friendlist
             let ListofUser = JSON.parse(localStorage.getItem('FriendList')) || []
             let UserFriendslist = ListofUser.filter(
-                (data) => data.email === Useremail
+                (data) => data.email === useremail1
             );
 
             setFriend(UserFriendslist[0].accepted)
@@ -37,13 +37,13 @@ const FriendSection = ({closeFriendSection,Useremail,Uname}) => {
             let ListofUser = JSON.parse(localStorage.getItem('Users')) || []
             //check if the user was already accepted the request
             let ListofUserValid = JSON.parse(localStorage.getItem('FriendList')) || []
-            let filteredData2 =ListofUserValid.filter((data)=> data.email === Useremail)
+            let filteredData2 =ListofUserValid.filter((data)=> data.email === useremail1)
             //get the accepted list of the user
             filteredData2 = filteredData2[0].accepted
 
             let SearchedUser = ListofUser.filter(
                 (data) => {
-                    if ((data.name.includes(Search) || data.email.includes(Search) ) && data.email !== Useremail ){
+                    if ((data.name.includes(Search) || data.email.includes(Search) ) && data.email !== useremail1 ){
                         //check if the email exist in the accepted list
                         if (!filteredData2.some((email) => email.email === data.email)) {
                             return data
@@ -71,7 +71,7 @@ const FriendSection = ({closeFriendSection,Useremail,Uname}) => {
         let fdata = frienddata.map(data => {
             if (data.email === userEmail) {
                 let newrequest = Array.isArray(data.requests) ? [...data.requests] : [];
-                newrequest.push({email : Useremail,name : Uname}) 
+                newrequest.push({email : useremail1,name : uname}) 
 
               return {
                 email: data.email, 
@@ -100,7 +100,7 @@ const FriendSection = ({closeFriendSection,Useremail,Uname}) => {
 
         //accepting the friend request
         let fdata = frienddata.map(data => {
-            if (data.email === Useremail) {
+            if (data.email === useremail1) {
 
                 //removing the list in the request data, and add the email of the user to accepted data
                 let newrequest = Array.isArray(data.requests) ? [...data.requests] : [];
@@ -123,7 +123,7 @@ const FriendSection = ({closeFriendSection,Useremail,Uname}) => {
 
                 //add the email of the user in the accpeted list
                 let newaccepted = Array.isArray(data.accepted) ? [...data.accepted] : [];
-                newaccepted.push({email : Useremail,name : Uname}) 
+                newaccepted.push({email : useremail1,name : uname}) 
 
                 return {
                     email: data.email, 
@@ -145,7 +145,7 @@ const FriendSection = ({closeFriendSection,Useremail,Uname}) => {
         //set the friendlist
         let ListofUser = JSON.parse(localStorage.getItem('FriendList')) || []
         let UserFriendslist = ListofUser.filter(
-            (data) => data.email === Useremail
+            (data) => data.email === useremail1
         );
 
         setFriend(UserFriendslist[0].accepted)

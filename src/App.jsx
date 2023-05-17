@@ -3,82 +3,64 @@ import './App.css'
 import LoginPage from './components/LoginPage'
 import Dashboard from './components/Dashboard';
 
-class User {
-  //Constructor for the User Class
-  constructor(uEmail,password, name, balance, expenseItems = []) {
-      this.uEmail = uEmail;
-      this.password = password;
-      this.name = name;
-      this.balance = balance;
-      this.expenseItems = expenseItems;
-  }
-  // function to add expense items in the list
-  addExpenses(newexpenseItem){
 
-      this.expenseItems.push(newexpenseItem);
+function user(uemail, password, name, balance, expenseitems = []) {
+  return {
+    uemail,
+    password,
+    name,
+    balance,
+    expenseitems,
 
-      // transform the balance and amount to float data type
-      let num1 = parseFloat(this.balance)
-      let num2 = parseFloat(newexpenseItem.cost)
-      // the neww value of user balance
-      this.balance = (num1 - num2).toFixed(2)
+    addExpenses(newExpenseItem) {
+      this.expenseitems.push(newExpenseItem);
 
-   
-  }
-  // function to delete specific item in the list
-  deleteExpenses(expenseItemName){
-      //update the balance 
-      this.expenseItems.filter(
-        (expenseItem) => {
-          if (expenseItem.uName === expenseItemName){
-              // transform the balance and amount to float data type
-              let num1 = parseFloat(this.balance)
-              let num2 = parseFloat(expenseItem.cost)
-              // the neww value of user balance
-              this.balance = (num1 + num2).toFixed(2)
-          }
+      let num1 = parseFloat(this.balance);
+      let num2 = parseFloat(newExpenseItem.cost);
+      this.balance = (num1 - num2).toFixed(2);
+    },
+
+    deleteExpenses(expenseItemName) {
+      this.expenseitems.filter((expenseItem) => {
+        if (expenseItem.uName === expenseItemName) {
+          let num1 = parseFloat(this.balance);
+          let num2 = parseFloat(expenseItem.cost);
+          this.balance = (num1 + num2).toFixed(2);
         }
-      );
+      });
 
-
-
-      //remove the item in the list
-      this.expenseItems = this.expenseItems.filter(
+      this.expenseitems = this.expenseitems.filter(
         (expenseItem) => expenseItem.uName !== expenseItemName
       );
-  }
-  // show the item list
-  listExpenses(){
-    return this.expenseItems
-  }
+    },
+
+    listExpenses() {
+      return this.expenseitems;
+    },
+  };
 }
-class ExpenseItems {
-  constructor(uName, cost, owner) {
-      this.uName = uName;
-      this.cost = cost;
-      this.owner = owner;
-  }
-  // ??
-  updateExpenses(expenses,oldid){
-      //changes in the cost of the item
-      let balancechange = 0
 
-      expenses.filter(
-        (expenseItem) => {
-          if (expenseItem.uName === oldid){
-              balancechange = expenseItem.cost - this.cost
+function expenseitems (uName, cost, owner) {
+  return {
+    uName,
+    cost,
+    owner,
 
+    updateExpenses(expenses, oldId) {
+      let balanceChange = 0;
 
-              expenseItem.uName = this.uName
-              expenseItem.cost = this.cost
-          }
+      expenses.filter((expenseItem) => {
+        if (expenseItem.uName === oldId) {
+          balanceChange = expenseItem.cost - this.cost;
+
+          expenseItem.uName = this.uName;
+          expenseItem.cost = this.cost;
         }
-      );
+      });
 
-      return [expenses,balancechange]
-
-
-  }
+      return [expenses, balanceChange];
+    },
+  };
 }
 
 function App() {
@@ -86,20 +68,20 @@ function App() {
   const [expenses, setExpenses] = useState(null) // list of expenses container
 
   //set the value of the authUser 
-  const HandleUserToken= (email, pass, uname, balance) =>{
+  const handleusertoken= (email, pass, uname, balance) =>{
 
     let storedData = JSON.parse(localStorage.getItem('UserDataList')) || [];
     let emailFilter = storedData.filter(data => data.email === email);
 
     if (emailFilter.length > 0){
 
-      const User1  = new User(email, pass, uname, balance, emailFilter[0].expenses)
+      const User1  = new user(email, pass, uname, balance, emailFilter[0].expenses)
       // Change the expenses list
       setExpenses(User1.listExpenses())
       // Change the authUser value
       setUser(User1)
     }else{
-      const User1  = new User(email, pass, uname, balance)
+      const User1  = new user(email, pass, uname, balance)
 
       // Change the expenses list
       setExpenses(User1.listExpenses())
@@ -115,18 +97,18 @@ function App() {
   }
 
   // remove the current user / logout
-  const HandleLogOut = ()=>{
+  const handlelogout = ()=>{
     // Change the authUser value
     setUser(null)
   }
 
   //add items in the expenses
-  const HandleAddItem = (Itemname, CostOfItem)=>{
+  const handleadditem = (Itemname, CostOfItem)=>{
     //Call the User class
-    const useradd = new User(authUser.uEmail,authUser.password,authUser.name,authUser.balance,authUser.expenseItems)
-    // Call the ExpenseItems class
-    const expenditureadd = new ExpenseItems(Itemname, CostOfItem, authUser.name)
-    // Add the items from ExpenseItems to the expenseItem of the User
+    const useradd = new user(authUser.uemail,authUser.password,authUser.name,authUser.balance,authUser.expenseitems)
+    // Call the expenseitems class
+    const expenditureadd = new expenseitems(Itemname, CostOfItem, authUser.name)
+    // Add the items from expenseitems to the expenseItem of the User
     useradd.addExpenses(expenditureadd)
     // Change the authUser value
     setUser(useradd)
@@ -135,34 +117,34 @@ function App() {
   }
 
   //Depositing the Money
-  const HandleDeposit= (Amount)=>{
+  const handledeposit= (Amount)=>{
     // transform the balance and amount to float data type
     let num1 = parseFloat(authUser.balance)
     let num2 = parseFloat(Amount)
     // the neww value of user balance
     let newbalance = (num1 + num2).toFixed(2)
     //Call the User class
-    const useradd = new User(authUser.uEmail,authUser.password,authUser.name,newbalance,authUser.expenseItems)
+    const useradd = new user(authUser.uemail,authUser.password,authUser.name,newbalance,authUser.expenseitems)
  
     setUser(useradd)
   }
   //Wtihdraw the Money
-  const HandleWithdraw =(Amount)=>{
+  const handlewithdraw =(Amount)=>{
     // transform the balance and amount to float data type
     let num1 = parseFloat(authUser.balance)
     let num2 = parseFloat(Amount)
     // the neww value of user balance
     let newbalance = (num1 - num2).toFixed(2)
     //Call the User class
-    const useradd = new User(authUser.uEmail,authUser.password,authUser.name,newbalance,authUser.expenseItems)
+    const useradd = new user(authUser.uemail,authUser.password,authUser.name,newbalance,authUser.expenseitems)
  
     setUser(useradd)
   }
 
   // Delete the specific item in the list
-  const HandleDelete = (Itemname)=>{
+  const handledelete = (Itemname)=>{
     //Call the User class
-    const itemdel = new User(authUser.uEmail,authUser.password,authUser.name,authUser.balance,authUser.expenseItems)
+    const itemdel = new user(authUser.uemail,authUser.password,authUser.name,authUser.balance,authUser.expenseitems)
     // Delete the specific Item in the list
     itemdel.deleteExpenses(Itemname)
     // Change the authUser value
@@ -172,9 +154,9 @@ function App() {
   }
 
   // Update the specific list
-  const HandleUpdateList = (itemname, itemcost, currentname)=>{
+  const handleupdatelist = (itemname, itemcost, currentname)=>{
     //create new item
-    const expenditureupdate = new ExpenseItems(itemname, itemcost, authUser.name)
+    const expenditureupdate = new expenseitems(itemname, itemcost, authUser.name)
 
 
     //update the expenses
@@ -183,7 +165,7 @@ function App() {
     let changeinbalance = parseFloat(authUser.balance) + parseFloat(arrcon[1])
 
 
-    const userupdatelist = new User(authUser.uEmail,authUser.password,authUser.name, changeinbalance  ,arrcon[0])
+    const userupdatelist = new user(authUser.uemail,authUser.password,authUser.name, changeinbalance  ,arrcon[0])
 
     // Change the authUser value
     setUser(userupdatelist)
@@ -193,17 +175,17 @@ function App() {
 
 
   // updating the name of the user
-  const SavenewName =(newname)=>{
-        const User1  = new User(authUser.uEmail, authUser.password, newname, authUser.balance, authUser.expenseItems)
+  const savenewname =(newname)=>{
+        const User1  = new user(authUser.uemail, authUser.password, newname, authUser.balance, authUser.expenseitems)
         // Change the authUser value
         setUser(User1)
 
         // return new list of data of the Users
         let storedData2 = JSON.parse(localStorage.getItem('Users')) || [];
         let newlist1 = storedData2.map(data => {
-          if (data.email === authUser.uEmail) {
+          if (data.email === authUser.uemail) {
             return {
-              email: authUser.uEmail,
+              email: authUser.uemail,
               balance: authUser.balance,
               name: newname,
               password: authUser.password
@@ -221,17 +203,17 @@ function App() {
         })
   }
     // updating the password of the user
-  const SavenewPassword =(newpass)=>{
-      const User1  = new User(authUser.uEmail, newpass, authUser.name, authUser.balance, authUser.expenseItems)
+  const savenewpassword =(newpass)=>{
+      const User1  = new user(authUser.uemail, newpass, authUser.name, authUser.balance, authUser.expenseitems)
       // Change the authUser value
       setUser(User1)
 
       // return new list of data of the Users
       let storedData2 = JSON.parse(localStorage.getItem('Users')) || [];
       let newlist1 = storedData2.map(data => {
-        if (data.email === authUser.uEmail) {
+        if (data.email === authUser.uemail) {
           return {
-            email: authUser.uEmail,
+            email: authUser.uemail,
             balance: authUser.balance,
             name: authUser.name,
             password: newpass
@@ -243,13 +225,13 @@ function App() {
       localStorage.setItem('Users', JSON.stringify(newlist1));
   }
 
-  const SendingMoney = (sentto, sentcost) =>{
+  const sendingmoney = (sentto, sentcost) =>{
     //console.log(sentto,sentcost)
 
     // new user balance
     let newbalance = authUser.balance - sentcost
 
-    const useradd = new User(authUser.uEmail,authUser.password,authUser.name,newbalance,authUser.expenseItems)
+    const useradd = new user(authUser.uemail,authUser.password,authUser.name,newbalance,authUser.expenseitems)
     //automatically updates the users value in the local storage using useeffect
     setUser(useradd)
 
@@ -302,11 +284,11 @@ function App() {
       let storedData = JSON.parse(localStorage.getItem('UserDataList')) || [];
 
       // check if the email already exists
-      let emailFilter = storedData.filter(data => data.email === authUser.uEmail);
+      let emailFilter = storedData.filter(data => data.email === authUser.uemail);
 
       if (emailFilter.length === 0) {
         let data1 = {
-          email: authUser.uEmail,
+          email: authUser.uemail,
           balance: authUser.balance,
           expenses: expenses
         }
@@ -317,9 +299,9 @@ function App() {
       } else {
         // return new list of data of the UserDataList
         let newlist = storedData.map(data => {
-          if (data.email === authUser.uEmail) {
+          if (data.email === authUser.uemail) {
             return {
-              email: authUser.uEmail,
+              email: authUser.uemail,
               balance: authUser.balance,
               expenses: expenses
             }
@@ -332,9 +314,9 @@ function App() {
         // return new list of data of the Users
         let storedData2 = JSON.parse(localStorage.getItem('Users')) || [];
         let newlist1 = storedData2.map(data => {
-          if (data.email === authUser.uEmail) {
+          if (data.email === authUser.uemail) {
             return {
-              email: authUser.uEmail,
+              email: authUser.uemail,
               balance: authUser.balance,
               name: authUser.name,
               password: authUser.password
@@ -354,7 +336,7 @@ function App() {
     return (
       <>
         <LoginPage 
-            HandleUserToken={HandleUserToken}
+            handleusertoken={handleusertoken}
         
         />
       </>
@@ -362,30 +344,30 @@ function App() {
   }else{
     /**
      * show the dashboard 
-     * HandleLogOut for logout function
-     * HandleAddItem for add item function
-     * HandleDeposit for the amount that will be deposited
-     * HandleWithdraw for the amount that will be withdrawn
-     * Expenditures for the list of expenses from listExpenses function
-     * Balance will hold the users balance value
+     * handlelogout for logout function
+     * handleadditem for add item function
+     * handledeposit for the amount that will be deposited
+     * handlewithdraw for the amount that will be withdrawn
+     * expenditures for the list of expenses from listExpenses function
+     * balance will hold the users balance value
      */
     return (
       <>
         
-        <Dashboard HandleLogOut={
-            HandleLogOut} 
-            HandleAddItem={HandleAddItem} 
-            HandleDeposit = {HandleDeposit}
-            HandleWithdraw = {HandleWithdraw}
-            HandleDelete = {HandleDelete}
-            HandleUpdateList = {HandleUpdateList}
-            Username = {authUser.name}
-            Uemail = {authUser.uEmail}
-            SavenewName = {SavenewName}
-            SavenewPassword= {SavenewPassword}
-            SendingMoney= {SendingMoney}
-            Expenditures = {expenses}
-            Balance={authUser.balance}
+        <Dashboard handlelogout={
+            handlelogout} 
+            handleadditem={handleadditem} 
+            handledeposit = {handledeposit}
+            handlewithdraw = {handlewithdraw}
+            handledelete = {handledelete}
+            handleupdatelist = {handleupdatelist}
+            username = {authUser.name}
+            uemail = {authUser.uemail}
+            savenewname = {savenewname}
+            savenewpassword= {savenewpassword}
+            sendingmoney= {sendingmoney}
+            expenditures = {expenses}
+            balance={authUser.balance}
 
             
         />
